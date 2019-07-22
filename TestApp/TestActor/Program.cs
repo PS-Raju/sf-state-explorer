@@ -28,7 +28,6 @@ namespace TestActor
             }
             catch (Exception e)
             {
-                ActorEventSource.Current.ActorHostInitializationFailed(e.ToString());
                 throw;
             }
         }

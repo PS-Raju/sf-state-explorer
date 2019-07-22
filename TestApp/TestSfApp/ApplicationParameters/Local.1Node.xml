@@ -4,5 +4,8 @@
     <Parameter Name="TestStatefulService_PartitionCount" Value="1" />
     <Parameter Name="TestStatefulService_MinReplicaSetSize" Value="1" />
     <Parameter Name="TestStatefulService_TargetReplicaSetSize" Value="1" />
+    <Parameter Name="TestActorService_PartitionCount" Value="1" />
+    <Parameter Name="TestActorService_TargetReplicaSetSize" Value="1" />
+    <Parameter Name="TestActorService_MinReplicaSetSize" Value="1" />
   </Parameters>
 </Application>
