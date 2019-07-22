@@ -7,7 +7,7 @@ Project("{A07B5EB6-E848-4116-A8D0-A826331D98C6}") = "SFStateExplorer", "SFStateE
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StateExplorer", "StateExplorer\StateExplorer.csproj", "{9F75E3BD-52F8-4F70-BF61-2B9285434F43}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFQueryable", "SFQuerable\SFQueryable.csproj", "{4FB36C9A-FE10-41DC-8809-C4B6B8CE304B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFQueryable", "SFQueryable\SFQueryable.csproj", "{4FB36C9A-FE10-41DC-8809-C4B6B8CE304B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
