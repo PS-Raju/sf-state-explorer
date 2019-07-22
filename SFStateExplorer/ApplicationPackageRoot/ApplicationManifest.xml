@@ -1,6 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ApplicationManifest xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ApplicationTypeName="SFStateExplorerType" ApplicationTypeVersion="1.0.0" xmlns="http://schemas.microsoft.com/2011/01/fabric">
   <Parameters>
+    <Parameter Name="StateExplorer_ASPNETCORE_ENVIRONMENT" DefaultValue="" />
     <Parameter Name="StateExplorer_InstanceCount" DefaultValue="-1" />
   </Parameters>
   <!-- Import the ServiceManifest from the ServicePackage. The ServiceManifestName and ServiceManifestVersion 
@@ -9,6 +10,9 @@
   <ServiceManifestImport>
     <ServiceManifestRef ServiceManifestName="StateExplorerPkg" ServiceManifestVersion="1.0.0" />
     <ConfigOverrides />
+    <EnvironmentOverrides CodePackageRef="code">
+      <EnvironmentVariable Name="ASPNETCORE_ENVIRONMENT" Value="[StateExplorer_ASPNETCORE_ENVIRONMENT]" />
+    </EnvironmentOverrides>
   </ServiceManifestImport>
   <DefaultServices>
     <!-- The section below creates instances of service types, when an instance of this 
