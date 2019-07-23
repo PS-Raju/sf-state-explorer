@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.ServiceFabric.Services.Client;
+using Microsoft.ServiceFabric.Services.Remoting.Client;
+using TestStatefulService;
 
 namespace StateExplorer.Controllers
 {
@@ -21,7 +24,8 @@ namespace StateExplorer.Controllers
         [HttpGet("{appName}/{serviceName}/{partitionKey}")]
         public ActionResult<string> GetAll(string appName, string serviceName, string partitionKey)
         {
-            return appName + "-" + serviceName + "-" + partitionKey;
+            var helloWorldClient = ServiceProxy.Create<IStatefulService>(new Uri("fabric:/TestSfApp/TestStatefulService"), new ServicePartitionKey(1));
+            return helloWorldClient.QueryState(null).Result;
         }
 
         // Get state information from stateful svc by name.
