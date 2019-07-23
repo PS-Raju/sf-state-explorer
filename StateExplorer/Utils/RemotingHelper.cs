@@ -10,7 +10,7 @@ namespace StateExplorer
         public static IStatefulService GetStatefulServiceHandler(string appName, string serviceName, string partitionKey)
         {
             var serviceUri = $"fabric:/{appName}/{serviceName}";
-            return ServiceProxy.Create<IStatefulService>(new Uri(serviceUri), new ServicePartitionKey(partitionKey));
+            return ServiceProxy.Create<IStatefulService>(new Uri(serviceUri), new ServicePartitionKey(long.Parse(partitionKey)));
         }
     }
 }

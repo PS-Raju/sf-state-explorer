@@ -26,7 +26,7 @@
         public ActionResult<string> GetByName(string appName, string serviceName, string partitionKey, string name)
         {
             var service = RemotingHelper.GetStatefulServiceHandler(appName, serviceName, partitionKey);
-            return service.QueryState(null).Result;
+            return service.QueryState(name).Result;
         }      
     }
 }
