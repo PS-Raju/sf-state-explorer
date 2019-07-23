@@ -14,10 +14,10 @@
         }
 
         // Get state information from actor svc by name.
-        [HttpGet("{appName}/{actorSvcName}/{partitionKey}/{name}")]
-        public ActionResult<string> GetByName(string appName, string actorSvcName, string partitionKey, string name)
+        [HttpGet("{appName}/{actorSvcName}/{partitionKey}/{actorId}")]
+        public ActionResult<string> GetByName(string appName, string actorSvcName, string partitionKey, string actorId)
         {
-            return appName + "-" + actorSvcName + "-" + partitionKey + "-"+name;
+            return appName + "-" + actorSvcName + "-" + partitionKey + "-"+ actorId;
         }      
     }
 }
