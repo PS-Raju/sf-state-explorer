@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Microsoft.ServiceFabric.Data;
 using TestStatefulService.Service;
 using Microsoft.ServiceFabric.Services.Remoting.Runtime;
+using SFQuerable;
 
 namespace TestStatefulService
 {
@@ -74,9 +75,17 @@ namespace TestStatefulService
             cancellationToken.Register(() => reliableDictionaryTimer.Dispose());
         }
 
-        public Task<string> QueryState(string reliableCollectionsName)
+        public async Task<string> QueryState(string reliableCollectionsName)
         {
-            return Task.FromResult("From Test service");
+            if (reliableCollectionsName == null)
+            {
+                return await ReliableStateManagerExtensions.GetMetadataAsync(this.StateManager);
+            }
+            else
+            {
+                return await ReliableStateManagerExtensions.QueryAsync(this.StateManager, reliableCollectionsName);
+            }
+
         }
     }
 }

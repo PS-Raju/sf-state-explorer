@@ -35,6 +35,7 @@ namespace SFQuerable
                     metadataList.Add(metadata);
                 }
             }
+            
             return JsonConvert.SerializeObject(metadataList);
         }
 
