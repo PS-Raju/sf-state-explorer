@@ -25,7 +25,7 @@ namespace TestStatefulService
                 // Prevents this host process from terminating so services keep running.
                 Thread.Sleep(Timeout.Infinite);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 throw;
             }

@@ -7,13 +7,14 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.ServiceFabric.Data;
 using TestStatefulService.Service;
+using Microsoft.ServiceFabric.Services.Remoting.Runtime;
 
 namespace TestStatefulService
 {
     /// <summary>
     /// An instance of this class is created for each service replica by the Service Fabric runtime.
     /// </summary>
-    internal sealed class TestStatefulService : StatefulService
+    internal sealed class TestStatefulService : StatefulService, ITestStatefulService
     {
         public TestStatefulService(StatefulServiceContext context, IReliableStateManagerReplica2 stateManager)
             : base(context, stateManager)
@@ -30,7 +31,7 @@ namespace TestStatefulService
         /// <returns>A collection of listeners.</returns>
         protected override IEnumerable<ServiceReplicaListener> CreateServiceReplicaListeners()
         {
-            return new ServiceReplicaListener[0];
+            return this.CreateServiceRemotingReplicaListeners();
         }
 
         /// <summary>
@@ -71,6 +72,11 @@ namespace TestStatefulService
                 period);
             // Register callback to stop timer during the service shutdown or primary swap. 
             cancellationToken.Register(() => reliableDictionaryTimer.Dispose());
+        }
+
+        public Task<string> QueryState(string reliableCollectionsName)
+        {
+            return Task.FromResult("From Test service");
         }
     }
 }

@@ -98,6 +98,7 @@
   <ItemGroup>
     <Compile Include="Interface\IActorStateProviderExtensions.cs" />
     <Compile Include="ActorStateProviderExtensions.cs" />
+    <Compile Include="Interface\IStatefulService.cs" />
     <Compile Include="Interface\IStateManagerExtensions.cs" />
     <Compile Include="Model\ActorPartitionMetadata.cs" />
     <Compile Include="Model\ReliableStateMetadata.cs" />
