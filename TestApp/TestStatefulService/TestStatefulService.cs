@@ -1,12 +1,12 @@
+using Microsoft.ServiceFabric.Services.Communication.Runtime;
+using Microsoft.ServiceFabric.Services.Runtime;
 using System;
 using System.Collections.Generic;
 using System.Fabric;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.ServiceFabric.Data.Collections;
-using Microsoft.ServiceFabric.Services.Communication.Runtime;
-using Microsoft.ServiceFabric.Services.Runtime;
+using Microsoft.ServiceFabric.Data;
+using TestStatefulService.Service;
 
 namespace TestStatefulService
 {
@@ -15,9 +15,11 @@ namespace TestStatefulService
     /// </summary>
     internal sealed class TestStatefulService : StatefulService
     {
-        public TestStatefulService(StatefulServiceContext context)
-            : base(context)
-        { }
+        public TestStatefulService(StatefulServiceContext context, IReliableStateManagerReplica2 stateManager)
+            : base(context, stateManager)
+        {
+
+        }
 
         /// <summary>
         /// Optional override to create listeners (e.g., HTTP, Service Remoting, WCF, etc.) for this service replica to handle client or user requests.
@@ -38,28 +40,37 @@ namespace TestStatefulService
         /// <param name="cancellationToken">Canceled when Service Fabric needs to shut down this service replica.</param>
         protected override async Task RunAsync(CancellationToken cancellationToken)
         {
-            // TODO: Replace the following sample code with your own logic 
-            //       or remove this RunAsync override if it's not needed in your service.
+            this.CreateTimerForReliableDictionary("sampleDictionary1", TimeSpan.FromMilliseconds(1), TimeSpan.FromSeconds(10), cancellationToken);
+            this.CreateTimerForReliableDictionary("sampleDictionary2", TimeSpan.FromMilliseconds(4), TimeSpan.FromSeconds(20), cancellationToken);
 
-            var myDictionary = await this.StateManager.GetOrAddAsync<IReliableDictionary<string, long>>("myDictionary");
+            this.CreateTimerForReliableQueue("sampleQueue1", TimeSpan.FromMilliseconds(2), TimeSpan.FromSeconds(15), cancellationToken);
+            this.CreateTimerForReliableQueue("sampleQueue2", TimeSpan.FromMilliseconds(3), TimeSpan.FromSeconds(30), cancellationToken);
 
-            while (true)
-            {
-                cancellationToken.ThrowIfCancellationRequested();
+            await Task.CompletedTask;
+        }
 
-                using (var tx = this.StateManager.CreateTransaction())
-                {
-                    var result = await myDictionary.TryGetValueAsync(tx, "Counter");
+        private void CreateTimerForReliableQueue(string queueName, TimeSpan dueTime, TimeSpan period, CancellationToken cancellationToken)
+        {
+            IReliableQueueService reliableDictionaryService = new ReliableQueueService(queueName, this.StateManager);
+            Timer reliableDictionaryTimer = new Timer(
+                reliableDictionaryService.PopulateReliableQueue,
+                cancellationToken,
+                dueTime,
+                period);
+            // Register callback to stop timer during the service shutdown or primary swap. 
+            cancellationToken.Register(() => reliableDictionaryTimer.Dispose());
+        }
 
-                    await myDictionary.AddOrUpdateAsync(tx, "Counter", 0, (key, value) => ++value);
-
-                    // If an exception is thrown before calling CommitAsync, the transaction aborts, all changes are 
-                    // discarded, and nothing is saved to the secondary replicas.
-                    await tx.CommitAsync();
-                }
-
-                await Task.Delay(TimeSpan.FromSeconds(1), cancellationToken);
-            }
+        private void CreateTimerForReliableDictionary(string dictionaryName, TimeSpan dueTime, TimeSpan period, CancellationToken cancellationToken)
+        {
+            IReliableDictionaryService reliableDictionaryService = new ReliableDictionaryService(dictionaryName, this.StateManager);
+            Timer reliableDictionaryTimer = new Timer(
+                reliableDictionaryService.PopulateReliableDictionary,
+                cancellationToken,
+                dueTime,
+                period);
+            // Register callback to stop timer during the service shutdown or primary swap. 
+            cancellationToken.Register(() => reliableDictionaryTimer.Dispose());
         }
     }
 }
