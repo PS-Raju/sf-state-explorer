@@ -1,8 +1,7 @@
-using System;
-using System.Diagnostics;
-using System.Threading;
-using System.Threading.Tasks;
+using Microsoft.ServiceFabric.Data;
 using Microsoft.ServiceFabric.Services.Runtime;
+using System;
+using System.Threading;
 
 namespace TestStatefulService
 {
@@ -21,12 +20,12 @@ namespace TestStatefulService
                 // an instance of the class is created in this host process.
 
                 ServiceRuntime.RegisterServiceAsync("TestStatefulServiceType",
-                    context => new TestStatefulService(context)).GetAwaiter().GetResult();
+                    context => new TestStatefulService(context, new ReliableStateManager(context))).GetAwaiter().GetResult();
 
                 // Prevents this host process from terminating so services keep running.
                 Thread.Sleep(Timeout.Infinite);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 throw;
             }
