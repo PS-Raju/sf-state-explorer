@@ -1,6 +1,7 @@
 ﻿using Microsoft.ServiceFabric.Actors;
 using Microsoft.ServiceFabric.Actors.Client;
 using Microsoft.ServiceFabric.Actors.Runtime;
+using SFQuerable.Interface;
 using System;
 using System.Fabric;
 using System.Threading;
@@ -9,7 +10,7 @@ using TestActor.Interfaces;
 
 namespace TestActor
 {
-    internal class TestActorService : ActorService
+    internal class TestActorService : ActorService, IStatefulActorService
     {
         public TestActorService(
             StatefulServiceContext context, 
@@ -56,6 +57,11 @@ namespace TestActor
             ActorId actorId = ActorId.CreateRandom();
             ITestActor testActor = ActorProxy.Create<ITestActor>(actorId);
             testActor.SetCountAsync(10, (CancellationToken) cancellationToken).Wait();
+        }
+
+        public Task<string> QueryState(ActorId actorId)
+        {
+            return Task.FromResult("From Actor Test service");
         }
     }
 }
