@@ -49,10 +49,8 @@ namespace TestStatefulService.Service
             {
                 queue = await this.stateManager.GetOrAddAsync<IReliableConcurrentQueue<string>>(this.queueName);
             }
-            catch (Exception e)
+            catch (Exception)
             {
-                string errorMessage = $"Get Queue failed.";
-
             }
 
             return queue;

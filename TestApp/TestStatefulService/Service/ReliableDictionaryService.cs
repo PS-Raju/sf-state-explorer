@@ -40,10 +40,8 @@
             {
                 dict = await this.stateManager.GetOrAddAsync<IReliableDictionary<string, string>>(this.listName);
             }
-            catch (Exception e)
+            catch (Exception)
             {
-                string errorMessage = $"Get List failed.";
-
             }
 
             return dict;

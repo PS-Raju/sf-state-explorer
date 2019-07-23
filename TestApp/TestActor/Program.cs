@@ -1,9 +1,6 @@
-﻿using System;
-using System.Diagnostics;
-using System.Fabric;
+﻿using Microsoft.ServiceFabric.Actors.Runtime;
+using System;
 using System.Threading;
-using System.Threading.Tasks;
-using Microsoft.ServiceFabric.Actors.Runtime;
 
 namespace TestActor
 {
@@ -22,7 +19,7 @@ namespace TestActor
                 // For more information, see https://aka.ms/servicefabricactorsplatform
 
                 ActorRuntime.RegisterActorAsync<TestActor>(
-                   (context, actorType) => new ActorService(context, actorType)).GetAwaiter().GetResult();
+                   (context, actorType) => new TestActorService(context, actorType)).GetAwaiter().GetResult();
 
                 Thread.Sleep(Timeout.Infinite);
             }
