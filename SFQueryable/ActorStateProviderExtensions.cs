@@ -19,7 +19,7 @@ namespace SFQuerable
     {
         public async Task<string> GetActorDetails(IActorStateProvider actorStateProvider, ActorId actorId, CancellationToken cancellationToken)
         {
-            /*
+            
             IEnumerable<string> stateKeys = await actorStateProvider.EnumerateStateNamesAsync(actorId, cancellationToken);
             List<string> keys = (List<string>)stateKeys;
             var actorDetails = new Dictionary<string, object>();
@@ -31,7 +31,7 @@ namespace SFQuerable
             }
 
             return JsonConvert.SerializeObject(actorDetails);
-            */
+            
             await Task.CompletedTask;
             throw new NotImplementedException();
         }
