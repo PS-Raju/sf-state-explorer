@@ -32,9 +32,7 @@
     <Content Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\StateExplorer\StateExplorer.csproj">
-      <ServiceLaunchUrl>http://{MachineName}:{ServicePort}/api/values</ServiceLaunchUrl>
-    </ProjectReference>
+    <ProjectReference Include="..\StateExplorer\StateExplorer.csproj" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" />
   <PropertyGroup>
