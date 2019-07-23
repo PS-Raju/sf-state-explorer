@@ -97,6 +97,7 @@
     <Reference Include="System.ServiceModel" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ITestActorService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestActor.cs" />
     <Compile Include="Program.cs" />
@@ -109,6 +110,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\SFQueryable\SFQueryable.csproj">
+      <Project>{4FB36C9A-FE10-41DC-8809-C4B6B8CE304B}</Project>
+      <Name>SFQueryable</Name>
+    </ProjectReference>
     <ProjectReference Include="..\TestActor.Interfaces\TestActor.Interfaces.csproj">
       <Project>{B0BA5041-BE79-4FC3-AECB-4303B8AA3EED}</Project>
       <Name>TestActor.Interfaces</Name>

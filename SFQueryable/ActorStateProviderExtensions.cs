@@ -19,21 +19,16 @@ namespace SFQuerable
     {
         public async Task<string> GetActorDetails(IActorStateProvider actorStateProvider, ActorId actorId, CancellationToken cancellationToken)
         {
-            /*
             IEnumerable<string> stateKeys = await actorStateProvider.EnumerateStateNamesAsync(actorId, cancellationToken);
-            List<string> keys = (List<string>)stateKeys;
             var actorDetails = new Dictionary<string, object>();
 
-            foreach (string key in keys)
+            foreach (var stateKey in stateKeys)
             {
-                object value = await actorStateProvider.LoadStateAsync<object>(actorId, key, cancellationToken);
-                actorDetails.Add(key, value);
+                object value = await actorStateProvider.LoadStateAsync<object>(actorId, stateKey, cancellationToken);
+                actorDetails.Add(stateKey, value);
             }
 
             return JsonConvert.SerializeObject(actorDetails);
-            */
-            await Task.CompletedTask;
-            throw new NotImplementedException();
         }
 
         public async Task<string> GetActorsInPartition(IActorStateProvider actorStateProvider, CancellationToken cancellationToken)

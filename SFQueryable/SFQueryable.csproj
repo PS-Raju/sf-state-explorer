@@ -104,6 +104,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Interface\IStatefulActorService.cs" />
     <Compile Include="Interface\IActorStateProviderExtensions.cs" />
     <Compile Include="ActorStateProviderExtensions.cs" />
     <Compile Include="Interface\IStatefulService.cs" />
