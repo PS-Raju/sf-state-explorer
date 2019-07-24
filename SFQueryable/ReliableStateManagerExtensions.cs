@@ -6,6 +6,7 @@ using SFQuerable.Model;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
@@ -19,9 +20,9 @@ namespace SFQuerable
 		/// </summary>
 		/// <param name="stateManager">Reliable state manager for the replica.</param>
 		/// <returns>Reliable.</returns>
-        public static async Task<string> GetMetadataAsync(this IReliableStateManager stateManager)
+        public static async Task<List<string>> GetMetadataAsync(this IReliableStateManager stateManager)
         {
-            ArrayList metadataList = new ArrayList();
+            List<string> metadataList = new List<string>();
             using (IAsyncEnumerator<IReliableState> reliableStatesEnumerator = stateManager.GetAsyncEnumerator())
             {
                 while (await reliableStatesEnumerator.MoveNextAsync(CancellationToken.None))
@@ -32,11 +33,12 @@ namespace SFQuerable
                         Name = reliableState.Name.AbsolutePath,
                         Type = reliableState.GetType().FullName
                     };
-                    metadataList.Add(metadata);
+                    metadataList.Add(metadata.ToString());
                 }
             }
-            
-            return JsonConvert.SerializeObject(metadataList);
+
+            // Return the data as json string
+            return metadataList;
         }
 
         /// <summary>
@@ -45,7 +47,7 @@ namespace SFQuerable
 		/// <param name="stateManager">Reliable state manager for the replica.</param>
 		/// <param name="reliableStateName">Name of the reliable state to be queried.</param>
 		/// <returns>The json serialized results of the query.</returns>
-		public static async Task<string> QueryAsync(this IReliableStateManager stateManager, string reliableStateName)
+		public static async Task<List<string>> QueryAsync(this IReliableStateManager stateManager, string reliableStateName)
         {
             using (var tx = stateManager.CreateTransaction())
             {
@@ -53,14 +55,19 @@ namespace SFQuerable
 
                 // Get the data from the reliable state
                 var results = await reliableState.GetAsyncEnumerable(tx, stateManager).ConfigureAwait(false);
-
-                // Convert to json
-                var json = await results.SelectAsync(r => JObject.FromObject(r)).AsEnumerable().ConfigureAwait(false);
-
-                await tx.CommitAsync().ConfigureAwait(false);
-
-                // Return the data as json string
-                return json.ToString();
+                try
+                {
+                    // Convert to json
+                    var json = await results.SelectAsync(r => r.ToString()).AsEnumerable().ConfigureAwait(false);
+                    await tx.CommitAsync().ConfigureAwait(false);
+                    // Return the data as json string
+                    return json.ToList();
+                }
+                catch(Exception e)
+                {
+                    throw e;
+                }
+               
             }
         }
 

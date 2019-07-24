@@ -1,6 +1,7 @@
 ﻿namespace StateExplorer.Controllers
 {
     using Microsoft.AspNetCore.Mvc;
+    using System.Collections.Generic;
     using System.Threading.Tasks;
 
     [Route("api/[controller]")]
@@ -16,7 +17,7 @@
 
         // Get all state information from stateful svc 
         [HttpGet("{appName}/{serviceName}/{partitionKey}")]
-        public async Task<ActionResult<string>> GetAll(string appName, string serviceName, string partitionKey)
+        public async Task<ActionResult<List<string>>> GetAll(string appName, string serviceName, string partitionKey)
         {
             var service = RemotingHelper.GetStatefulServiceHandler(appName, serviceName, partitionKey);
             return await service.QueryState(null);
@@ -24,10 +25,11 @@
 
         // Get state information from stateful svc by name.
         [HttpGet("{appName}/{serviceName}/{partitionKey}/{name}")]
-        public async Task<ActionResult<string>> GetByName(string appName, string serviceName, string partitionKey, string name)
+        public async Task<ActionResult<List<string>>> GetByName(string appName, string serviceName, string partitionKey, string name)
         {
             var service = RemotingHelper.GetStatefulServiceHandler(appName, serviceName, partitionKey);
-            return await service.QueryState(name);
+            var response = await service.QueryState(name);
+            return response;
         }      
     }
 }

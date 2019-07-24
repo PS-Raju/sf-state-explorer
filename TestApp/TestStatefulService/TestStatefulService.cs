@@ -75,7 +75,7 @@ namespace TestStatefulService
             cancellationToken.Register(() => reliableDictionaryTimer.Dispose());
         }
 
-        public async Task<string> QueryState(string reliableCollectionsName)
+        public async Task<List<string>> QueryState(string reliableCollectionsName)
         {
             if (reliableCollectionsName == null)
             {
