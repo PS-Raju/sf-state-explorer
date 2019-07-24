@@ -31,7 +31,7 @@ namespace SFQuerable
                     ReliableStateMetadata metadata = new ReliableStateMetadata
                     {
                         Name = reliableState.Name.AbsolutePath,
-                        Type = reliableState.GetType().FullName,
+                        Type = reliableState.GetType().Name,
                         Count = await GetCount(stateManager, reliableState)
                     };
                     metadataList.Add(metadata.ToString());
@@ -173,24 +173,31 @@ namespace SFQuerable
 
         private static async Task<long> GetCount(IReliableStateManager stateManager, IReliableState reliableState)
         {
-            if (reliableState.ImplementsGenericType(typeof(IReliableDictionary<,>)) || reliableState.ImplementsGenericType(typeof(IReliableQueue<>)))
+            try
             {
-                using (var tx = stateManager.CreateTransaction())
+                if (reliableState.ImplementsGenericType(typeof(IReliableDictionary<,>)) || reliableState.ImplementsGenericType(typeof(IReliableQueue<>)))
                 {
-                    var getCountAsyncTask = reliableState.CallMethod<Task>("GetCountAsync", new[] { typeof(ITransaction) }, tx);
-                    await getCountAsyncTask.ConfigureAwait(false);
+                    using (var tx = stateManager.CreateTransaction())
+                    {
+                        var getCountAsyncTask = reliableState.CallMethod<Task>("GetCountAsync", new[] { typeof(ITransaction) }, tx);
+                        await getCountAsyncTask.ConfigureAwait(false);
 
-                    var count = getCountAsyncTask.GetPropertyValue<object>("Result");
-                    return (long)count;
+                        var count = getCountAsyncTask.GetPropertyValue<object>("Result");
+                        return (long)count;
+                    }
+                }
+                else if (reliableState.ImplementsGenericType(typeof(IReliableConcurrentQueue<>)))
+                {
+                    return reliableState.GetPropertyValue<long>("Count");
+                }
+                else
+                {
+                    throw new ArgumentException($"IReliableState '{reliableState.Name.AbsolutePath}' must be an IReliableDictionary or IReliableQueue or IReliableConcurrentQueue.");
                 }
             }
-            else if (reliableState.ImplementsGenericType(typeof(IReliableConcurrentQueue<>)))
+            catch(Exception e)
             {
-                    return reliableState.GetPropertyValue<long>("Count");
-            }
-            else
-            {
-                throw new ArgumentException($"IReliableState '{reliableState.Name.AbsolutePath}' must be an IReliableDictionary or IReliableQueue or IReliableConcurrentQueue.");
+                return 0;
             }
         }
     }

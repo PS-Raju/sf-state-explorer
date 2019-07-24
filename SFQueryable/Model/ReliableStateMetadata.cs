@@ -26,8 +26,8 @@ namespace SFQuerable.Model
         {
             StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.Append("{");
-            stringBuilder.Append("\"Name\" :\"").Append(this.Name).Append("\"");
-            stringBuilder.Append("\"Type\" :\"").Append(this.Type).Append("\"");
+            stringBuilder.Append("\"Name\" :\"").Append(this.Name).Append("\", ");
+            stringBuilder.Append("\"Type\" :\"").Append(this.Type).Append("\", ");
             stringBuilder.Append("\"Count\" :").Append(this.Count);
             stringBuilder.Append("}");
             return stringBuilder.ToString();
