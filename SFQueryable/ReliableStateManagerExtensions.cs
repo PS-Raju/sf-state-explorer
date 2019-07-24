@@ -70,7 +70,7 @@ namespace SFQuerable
 		/// <param name="state">Reliable state (must implement <see cref="IReliableDictionary{TKey, TValue}"/>).</param>
 		/// <param name="tx">Transaction to create the enumerable under.</param>
 		/// <returns>Values from the reliable state as <see cref="Entity{TKey, TValue}"/> values.</returns>
-		private static async Task<IAsyncEnumerable<object>> GetAsyncEnumerable(this IReliableState state,
+		private static async Task<IAsyncEnumerable<KeyValuePair<string, string>>> GetAsyncEnumerable(this IReliableState state,
             ITransaction tx, IReliableStateManager stateManager)
         {
             if (!state.ImplementsGenericType(typeof(IReliableDictionary<,>)))
@@ -86,7 +86,7 @@ namespace SFQuerable
             // Get the AsEntity method to convert to an Entity enumerable.
             var asyncEnumerable = createEnumerableAsyncTask.GetPropertyValue<object>("Result");
             var asEntityMethod = typeof(ReliableStateManagerExtensions).GetMethod("AsEntity", BindingFlags.NonPublic | BindingFlags.Static).MakeGenericMethod(entityType.GenericTypeArguments);
-            return (IAsyncEnumerable<object>)asEntityMethod.Invoke(null, new object[] { asyncEnumerable });
+            return (IAsyncEnumerable<KeyValuePair<string, string>>)asEntityMethod.Invoke(null, new object[] { asyncEnumerable });
         }
 
         /// <summary>
@@ -102,7 +102,7 @@ namespace SFQuerable
         /// <summary>
 		/// Get the Entity model type from the reliable dictionary.
 		/// This is the full metadata type definition for the rows in the
-		/// dictionary (key, value, partition, etag).
+		/// dictionary (key, value).
 		/// </summary>
 		/// <param name="state">Reliable dictionary instance.</param>
 		/// <returns>The Entity model type for the dictionary.</returns>
