@@ -28,7 +28,7 @@
             IReliableDictionary<string, string> list = await this.GetListAsync();
             using (ITransaction tx = this.stateManager.CreateTransaction())
             {
-                await list.AddAsync(tx, Guid.NewGuid().ToString(), Guid.NewGuid().ToString());
+                await list.AddAsync(tx, Guid.NewGuid().ToString(), DateTime.Now.ToString());
                 await tx.CommitAsync();
             }
         }

@@ -15,9 +15,9 @@ using System.Threading.Tasks;
 
 namespace SFQuerable
 {
-    public class ActorStateProviderExtensions : IActorStateProviderExtensions
+    public static class ActorStateProviderExtensions 
     {
-        public async Task<string> GetActorDetails(IActorStateProvider actorStateProvider, ActorId actorId, CancellationToken cancellationToken)
+        public static async Task<string> GetActorDetails(IActorStateProvider actorStateProvider, ActorId actorId, CancellationToken cancellationToken)
         {
             IEnumerable<string> stateKeys = await actorStateProvider.EnumerateStateNamesAsync(actorId, cancellationToken);
             var actorDetails = new Dictionary<string, object>();
@@ -31,7 +31,7 @@ namespace SFQuerable
             return JsonConvert.SerializeObject(actorDetails);
         }
 
-        public async Task<string> GetActorsInPartition(IActorStateProvider actorStateProvider, CancellationToken cancellationToken)
+        public static async Task<string> GetActorsInPartition(IActorStateProvider actorStateProvider, CancellationToken cancellationToken)
         {
             List<ActorId> actorsInPartition = await GetAllActorsInCurrentPartitionAsync(actorStateProvider, cancellationToken);
             var actorPartitionMetadata = new ActorPartitionMetadata
@@ -39,7 +39,7 @@ namespace SFQuerable
                 count = actorsInPartition.Count,
                 actors = actorsInPartition
             };
-            return JsonConvert.SerializeObject(actorPartitionMetadata);
+            return actorPartitionMetadata.ToString();
         }
 
         /// <summary>
@@ -47,7 +47,7 @@ namespace SFQuerable
         /// </summary>
         /// <param name="cancellationToken">Cancellation token.</param>
         /// <returns>Task containing list of actorIds.</returns>
-        private async Task<List<ActorId>> GetAllActorsInCurrentPartitionAsync(IActorStateProvider actorStateProvider, CancellationToken cancellationToken)
+        private static async Task<List<ActorId>> GetAllActorsInCurrentPartitionAsync(IActorStateProvider actorStateProvider, CancellationToken cancellationToken)
         {
             var actorsInPartition = new List<ActorId>();
             ContinuationToken continuationToken = null;

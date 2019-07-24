@@ -26,8 +26,9 @@
   <ConfigPackage Name="Config" Version="1.0.0" />
   <Resources>
     <Endpoints>
-      <Endpoint Name="TestActorServiceEndpointV2_1" />
+      <Endpoint Name="TestActorServiceEndpointV2" />
       <Endpoint Name="TestActorServiceReplicatorEndpoint" />
+      <Endpoint Name="TestActorServiceEndpointV2_1" />
     </Endpoints>
   </Resources>
   <!-- The content will be generated during build -->

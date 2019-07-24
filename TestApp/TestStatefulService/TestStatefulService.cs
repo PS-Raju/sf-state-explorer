@@ -42,10 +42,13 @@ namespace TestStatefulService
         /// <param name="cancellationToken">Canceled when Service Fabric needs to shut down this service replica.</param>
         protected override async Task RunAsync(CancellationToken cancellationToken)
         {
-            this.CreateTimerForReliableDictionary("sampleDictionary1", TimeSpan.FromMilliseconds(1), TimeSpan.FromSeconds(10), cancellationToken);
-            this.CreateTimerForReliableDictionary("sampleDictionary2", TimeSpan.FromMilliseconds(4), TimeSpan.FromSeconds(20), cancellationToken);
-
+            await Task.Delay(120000);
+            this.CreateTimerForReliableDictionary("sampleDictionary1", TimeSpan.FromSeconds(5), TimeSpan.FromSeconds(2), cancellationToken);
+            await Task.Delay(10000);
+            this.CreateTimerForReliableDictionary("sampleDictionary2", TimeSpan.FromMilliseconds(4), TimeSpan.FromSeconds(10), cancellationToken);
+            await Task.Delay(10000);
             this.CreateTimerForReliableQueue("sampleQueue1", TimeSpan.FromMilliseconds(2), TimeSpan.FromSeconds(15), cancellationToken);
+            await Task.Delay(10000);
             this.CreateTimerForReliableQueue("sampleQueue2", TimeSpan.FromMilliseconds(3), TimeSpan.FromSeconds(30), cancellationToken);
 
             await Task.CompletedTask;

@@ -5,8 +5,8 @@ using System.Threading.Tasks;
 
 namespace SFQuerable.Interface
 {
-    public interface IStatefulActorService : IActorService
+    public interface IStatefulActorService : IService
     {
-        Task<string> QueryState(ActorId actorId);
+        Task<string> QueryState(string actorId);
     }
 }

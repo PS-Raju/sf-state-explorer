@@ -1,8 +1,12 @@
 ﻿using Microsoft.ServiceFabric.Actors;
 using Microsoft.ServiceFabric.Actors.Client;
 using Microsoft.ServiceFabric.Actors.Runtime;
+using Microsoft.ServiceFabric.Services.Communication.Runtime;
+using Microsoft.ServiceFabric.Services.Remoting.Runtime;
+using SFQuerable;
 using SFQuerable.Interface;
 using System;
+using System.Collections.Generic;
 using System.Fabric;
 using System.Threading;
 using System.Threading.Tasks;
@@ -27,6 +31,19 @@ namespace TestActor
                   stateProvider, 
                   settings)
         {
+        }
+
+
+        /// <summary>
+        /// Optional override to create listeners (e.g., HTTP, Service Remoting, WCF, etc.) for this service replica to handle client or user requests.
+        /// </summary>
+        /// <remarks>
+        /// For more information on service communication, see https://aka.ms/servicefabricservicecommunication
+        /// </remarks>
+        /// <returns>A collection of listeners.</returns>
+        protected override IEnumerable<ServiceReplicaListener> CreateServiceReplicaListeners()
+        {
+            return this.CreateServiceRemotingReplicaListeners();
         }
 
         /// <summary>
@@ -59,9 +76,16 @@ namespace TestActor
             testActor.SetCountAsync(10, (CancellationToken) cancellationToken).Wait();
         }
 
-        public Task<string> QueryState(ActorId actorId)
+        public async Task<string> QueryState(string actorId)
         {
-            return Task.FromResult("From Actor Test service");
+            if (actorId == null)
+            {
+                return await ActorStateProviderExtensions.GetActorsInPartition(this.StateProvider, default(CancellationToken));
+            }
+            else
+            {
+                return await ActorStateProviderExtensions.GetActorDetails(this.StateProvider, new ActorId(actorId), default(CancellationToken));
+            }
         }
     }
 }
