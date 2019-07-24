@@ -31,7 +31,8 @@ namespace SFQuerable
                     ReliableStateMetadata metadata = new ReliableStateMetadata
                     {
                         Name = reliableState.Name.AbsolutePath,
-                        Type = reliableState.GetType().FullName
+                        Type = reliableState.GetType().FullName,
+                        Count = await GetCount(stateManager, reliableState)
                     };
                     metadataList.Add(metadata.ToString());
                 }
@@ -86,7 +87,6 @@ namespace SFQuerable
             var entityType = state.GetEntityType();
 
             // Create the async enumerable.
-            var dictionaryType = typeof(IReliableDictionary<,>).MakeGenericType(state.GetType().GetGenericArguments());
             var createEnumerableAsyncTask = state.CallMethod<Task>("CreateEnumerableAsync", new[] { typeof(ITransaction) }, tx);
             await createEnumerableAsyncTask.ConfigureAwait(false);
 
@@ -171,5 +171,27 @@ namespace SFQuerable
             return reliableState;
         }
 
+        private static async Task<long> GetCount(IReliableStateManager stateManager, IReliableState reliableState)
+        {
+            if (reliableState.ImplementsGenericType(typeof(IReliableDictionary<,>)) || reliableState.ImplementsGenericType(typeof(IReliableQueue<>)))
+            {
+                using (var tx = stateManager.CreateTransaction())
+                {
+                    var getCountAsyncTask = reliableState.CallMethod<Task>("GetCountAsync", new[] { typeof(ITransaction) }, tx);
+                    await getCountAsyncTask.ConfigureAwait(false);
+
+                    var count = getCountAsyncTask.GetPropertyValue<object>("Result");
+                    return (long)count;
+                }
+            }
+            else if (reliableState.ImplementsGenericType(typeof(IReliableConcurrentQueue<>)))
+            {
+                    return reliableState.GetPropertyValue<long>("Count");
+            }
+            else
+            {
+                throw new ArgumentException($"IReliableState '{reliableState.Name.AbsolutePath}' must be an IReliableDictionary or IReliableQueue or IReliableConcurrentQueue.");
+            }
+        }
     }
 }
