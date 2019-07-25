@@ -1,0 +1,64 @@
+﻿@model ReliableDictionaryViewModel
+@{
+    ViewData["Title"] = "ReliableDictionary";
+}
+<h2>@ViewData["Title"]</h2>
+
+<h3><strong>Application Name:</strong>@Model.AppName</h3>
+<h4><strong>StatefulService Name:</strong>@Model.ServiceName</h4>
+<h4><strong>Collection Name:</strong>@Model.CollectionName</h4>
+<style type="text/css">
+    .tg {
+        border-collapse: collapse;
+        border-spacing: 0;
+    }
+
+        .tg td {
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            padding: 10px 5px;
+            border-style: solid;
+            border-width: 1px;
+            overflow: hidden;
+            word-break: normal;
+            border-color: black;
+        }
+
+        .tg th {
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            font-weight: normal;
+            padding: 10px 5px;
+            border-style: solid;
+            border-width: 1px;
+            overflow: hidden;
+            word-break: normal;
+            border-color: black;
+        }
+
+        .tg .tg-1wig {
+            font-weight: bold;
+            text-align: left;
+            vertical-align: top
+        }
+
+        .tg .tg-0lax {
+            text-align: left;
+            vertical-align: top
+        }
+</style>
+<table class="tg">
+    <tr>
+        <th class="tg-1wig">Collection Type</th>
+        <th class="tg-1wig">Collection Name</th>
+    </tr>
+    @foreach (string kvp in Model.KeyValuePairs)
+    {
+        string item = kvp.Substring(1, kvp.Length-2);
+        string[] keyValuePair = item.Split(",");
+        <tr>
+            <td class="tg-0lax">@keyValuePair[0]</td>
+            <td class="tg-0lax">@keyValuePair[1]</td>
+        </tr>
+    }
+</table>
